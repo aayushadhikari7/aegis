@@ -13,9 +13,13 @@ members = [
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
-authors = ["Aayush Adhikari <aayushadhikari7@github.com>"]
+authors = ["Aayush Adhikari"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/aayushadhikari7/aegis"
+homepage = "https://github.com/aayushadhikari7/aegis"
+documentation = "https://docs.rs/aegis"
+keywords = ["wasm", "webassembly", "sandbox", "security", "runtime"]
+categories = ["wasm", "development-tools"]
 rust-version = "1.85"
 
 [workspace.dependencies]
