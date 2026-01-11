@@ -1,0 +1,62 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/aegis",
+    "crates/aegis-core",
+    "crates/aegis-capability",
+    "crates/aegis-resource",
+    "crates/aegis-host",
+    "crates/aegis-observe",
+    "crates/aegis-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/yourusername/aegis"
+rust-version = "1.85"
+
+[workspace.dependencies]
+# Internal crates
+aegis = { path = "crates/aegis" }
+aegis-core = { path = "crates/aegis-core" }
+aegis-capability = { path = "crates/aegis-capability" }
+aegis-resource = { path = "crates/aegis-resource" }
+aegis-host = { path = "crates/aegis-host" }
+aegis-observe = { path = "crates/aegis-observe" }
+
+# WebAssembly runtime
+wasmtime = "29"
+
+# Error handling
+thiserror = "2"
+anyhow = "1"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+
+# Async runtime
+tokio = { version = "1", features = ["rt-multi-thread", "sync", "time", "macros"] }
+
+# CLI
+clap = { version = "4", features = ["derive"] }
+
+# Logging/tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Utilities
+parking_lot = "0.12"
+dashmap = "6"
+bytes = "1"
+uuid = { version = "1", features = ["v4", "serde"] }
+
+# Testing
+wat = "1"
+
+[profile.release]
+lto = true
+codegen-units = 1

@@ -1,0 +1,15 @@
+[package]
+name = "aegis-core"
+description = "Core runtime engine for the Aegis WebAssembly sandbox"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+wasmtime = { workspace = true }
+thiserror = { workspace = true }
+parking_lot = { workspace = true }
+tracing = { workspace = true }
+uuid = { workspace = true }
+wat = { workspace = true }

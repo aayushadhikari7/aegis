@@ -1,0 +1,21 @@
+[package]
+name = "aegis"
+description = "Aegis - A local-first WebAssembly sandbox runtime"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+aegis-core = { workspace = true }
+aegis-capability = { workspace = true }
+aegis-resource = { workspace = true }
+aegis-host = { workspace = true }
+aegis-observe = { workspace = true }
+wasmtime = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+[dev-dependencies]
+wat = { workspace = true }
+tokio = { workspace = true }

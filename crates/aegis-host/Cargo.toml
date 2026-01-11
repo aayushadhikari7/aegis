@@ -1,0 +1,14 @@
+[package]
+name = "aegis-host"
+description = "Host function system for the Aegis WebAssembly sandbox"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+aegis-core = { workspace = true }
+aegis-capability = { workspace = true }
+wasmtime = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
