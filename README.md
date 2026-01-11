@@ -4,9 +4,10 @@
 
 **Run untrusted WebAssembly code safely**
 
+[![Crates.io](https://img.shields.io/crates/v/aegis-wasm.svg)](https://crates.io/crates/aegis-wasm)
+[![docs.rs](https://img.shields.io/docsrs/aegis-wasm)](https://docs.rs/aegis-wasm)
 [![Rust](https://img.shields.io/badge/rust-1.85%2B-orange.svg)](https://www.rust-lang.org/)
 [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](#license)
-[![Crates.io](https://img.shields.io/crates/v/aegis.svg)](https://crates.io/crates/aegis)
 
 [Installation](#installation) | [CLI Usage](#cli-usage) | [Library Usage](#library-usage) | [Features](#features)
 
@@ -33,22 +34,20 @@ Aegis is a **WebAssembly sandbox** that lets you run untrusted code without risk
 ### CLI Tool
 
 ```bash
-# From source
-git clone https://github.com/aayushadhikari7/aegis
-cd aegis
-cargo install --path crates/aegis-cli
-
-# Or directly (once published)
-cargo install aegis-cli
+cargo install aegis-wasm-cli
 ```
 
 ### As a Library
 
-Add to your `Cargo.toml`:
+```bash
+cargo add aegis-wasm
+```
+
+Or add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-aegis = { git = "https://github.com/aayushadhikari7/aegis" }
+aegis-wasm = "0.1"
 ```
 
 ---
@@ -179,7 +178,7 @@ Options:
 ### Basic Example
 
 ```rust
-use aegis::prelude::*;
+use aegis_wasm::prelude::*;
 use std::time::Duration;
 
 fn main() -> Result<(), AegisError> {
@@ -230,7 +229,7 @@ let module = runtime.load_wat(r#"
 ### Granting Capabilities
 
 ```rust
-use aegis::prelude::*;
+use aegis_wasm::prelude::*;
 
 let runtime = Aegis::builder()
     .with_memory_limit(64 * 1024 * 1024)
@@ -289,7 +288,7 @@ println!("Peak memory: {} bytes", metrics.peak_memory);
 ### Handling Errors
 
 ```rust
-use aegis::prelude::*;
+use aegis_wasm::prelude::*;
 
 match sandbox.call::<(i32,), i32>("process", (input,)) {
     Ok(result) => println!("Success: {}", result),
@@ -394,13 +393,13 @@ The CLI and library support these WASM types:
 
 | Crate | Description |
 |-------|-------------|
-| `aegis` | Main library - start here |
-| `aegis-core` | Low-level engine and sandbox |
-| `aegis-capability` | Permission system |
-| `aegis-resource` | Memory/CPU/time limits |
-| `aegis-host` | Host function registration |
-| `aegis-observe` | Metrics and monitoring |
-| `aegis-cli` | Command-line tool |
+| [`aegis-wasm`](https://crates.io/crates/aegis-wasm) | Main library - start here |
+| [`aegis-wasm-cli`](https://crates.io/crates/aegis-wasm-cli) | Command-line tool |
+| [`aegis-core`](https://crates.io/crates/aegis-core) | Low-level engine and sandbox |
+| [`aegis-capability`](https://crates.io/crates/aegis-capability) | Permission system |
+| [`aegis-resource`](https://crates.io/crates/aegis-resource) | Memory/CPU/time limits |
+| [`aegis-host`](https://crates.io/crates/aegis-host) | Host function registration |
+| [`aegis-observe`](https://crates.io/crates/aegis-observe) | Metrics and monitoring |
 
 ---
 
@@ -434,6 +433,6 @@ Contributions welcome! Feel free to:
 
 <div align="center">
 
-**[GitHub](https://github.com/aayushadhikari7/aegis)** | **[Issues](https://github.com/aayushadhikari7/aegis/issues)**
+**[GitHub](https://github.com/aayushadhikari7/aegis)** | **[Crates.io](https://crates.io/crates/aegis-wasm)** | **[Docs](https://docs.rs/aegis-wasm)** | **[Issues](https://github.com/aayushadhikari7/aegis/issues)**
 
 </div>
