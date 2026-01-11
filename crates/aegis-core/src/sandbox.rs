@@ -320,7 +320,8 @@ impl<S: Send + 'static> Sandbox<S> {
         // Calculate fuel consumed
         if self.engine.fuel_enabled() {
             let remaining_fuel = self.store.get_fuel().unwrap_or(0);
-            self.store.data_mut().metrics.fuel_consumed = initial_fuel.saturating_sub(remaining_fuel);
+            self.store.data_mut().metrics.fuel_consumed =
+                initial_fuel.saturating_sub(remaining_fuel);
         }
 
         // Handle the result
@@ -604,10 +605,10 @@ impl<S: Send + 'static> SandboxBuilder<S> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::sync::Arc;
     use crate::config::EngineConfig;
     use crate::engine::AegisEngine;
     use crate::module::ModuleLoader;
+    use std::sync::Arc;
 
     fn create_engine() -> SharedEngine {
         Arc::new(AegisEngine::new(EngineConfig::default()).unwrap())

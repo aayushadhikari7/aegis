@@ -139,12 +139,10 @@ impl ClockCapability {
     /// Returns the timestamp in nanoseconds, or None if clock access is denied.
     pub fn get_time(&self) -> Option<u64> {
         match &self.clock_type {
-            ClockType::RealTime => {
-                SystemTime::now()
-                    .duration_since(SystemTime::UNIX_EPOCH)
-                    .ok()
-                    .map(|d| d.as_nanos() as u64)
-            }
+            ClockType::RealTime => SystemTime::now()
+                .duration_since(SystemTime::UNIX_EPOCH)
+                .ok()
+                .map(|d| d.as_nanos() as u64),
             ClockType::Monotonic => {
                 // For monotonic, we'd use std::time::Instant in real code
                 // Here we use system time as a placeholder

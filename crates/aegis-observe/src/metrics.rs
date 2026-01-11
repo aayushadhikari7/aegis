@@ -93,13 +93,21 @@ impl MetricsCollector {
     }
 
     /// Record a denied capability attempt.
-    pub fn record_capability_denied(&self, capability: &CapabilityId, action: String, reason: String) {
-        self.capability_usage.write().denied_attempts.push(DeniedAttempt {
-            capability: capability.clone(),
-            action,
-            reason,
-            timestamp: Instant::now(),
-        });
+    pub fn record_capability_denied(
+        &self,
+        capability: &CapabilityId,
+        action: String,
+        reason: String,
+    ) {
+        self.capability_usage
+            .write()
+            .denied_attempts
+            .push(DeniedAttempt {
+                capability: capability.clone(),
+                action,
+                reason,
+                timestamp: Instant::now(),
+            });
     }
 
     /// Record a host function call.
@@ -320,7 +328,10 @@ mod tests {
         collector.record_capability_usage(&cap_id);
 
         let snapshot = collector.snapshot();
-        assert_eq!(snapshot.capability_usage.usage_counts.get(&cap_id), Some(&2));
+        assert_eq!(
+            snapshot.capability_usage.usage_counts.get(&cap_id),
+            Some(&2)
+        );
     }
 
     #[test]

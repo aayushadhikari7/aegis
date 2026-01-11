@@ -138,7 +138,11 @@ pub struct DenialReason {
 
 impl DenialReason {
     /// Create a new denial reason.
-    pub fn new(capability: CapabilityId, action: impl Into<String>, message: impl Into<String>) -> Self {
+    pub fn new(
+        capability: CapabilityId,
+        action: impl Into<String>,
+        message: impl Into<String>,
+    ) -> Self {
         Self {
             capability,
             action: action.into(),

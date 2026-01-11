@@ -72,7 +72,8 @@ use aegis_capability::{
     NetworkCapability,
 };
 use aegis_core::{
-    AegisEngine, EngineConfig, ExecutionError, ModuleLoader, ResourceLimits, Sandbox, SandboxConfig, SharedEngine, ValidatedModule,
+    AegisEngine, EngineConfig, ExecutionError, ModuleLoader, ResourceLimits, Sandbox,
+    SandboxConfig, SharedEngine, ValidatedModule,
 };
 use aegis_observe::{EventDispatcher, EventSubscriber};
 
@@ -332,7 +333,10 @@ impl<'a> RuntimeSandboxBuilder<'a> {
 
     /// Override memory limit.
     pub fn with_memory_limit(mut self, bytes: usize) -> Self {
-        let mut limits = self.limits.take().unwrap_or_else(|| self.runtime.default_limits.clone());
+        let mut limits = self
+            .limits
+            .take()
+            .unwrap_or_else(|| self.runtime.default_limits.clone());
         limits.max_memory_bytes = bytes;
         self.limits = Some(limits);
         self
@@ -340,7 +344,10 @@ impl<'a> RuntimeSandboxBuilder<'a> {
 
     /// Override fuel limit.
     pub fn with_fuel_limit(mut self, fuel: u64) -> Self {
-        let mut limits = self.limits.take().unwrap_or_else(|| self.runtime.default_limits.clone());
+        let mut limits = self
+            .limits
+            .take()
+            .unwrap_or_else(|| self.runtime.default_limits.clone());
         limits.initial_fuel = fuel;
         self.limits = Some(limits);
         self
@@ -348,7 +355,10 @@ impl<'a> RuntimeSandboxBuilder<'a> {
 
     /// Override timeout.
     pub fn with_timeout(mut self, timeout: Duration) -> Self {
-        let mut limits = self.limits.take().unwrap_or_else(|| self.runtime.default_limits.clone());
+        let mut limits = self
+            .limits
+            .take()
+            .unwrap_or_else(|| self.runtime.default_limits.clone());
         limits.timeout = timeout;
         self.limits = Some(limits);
         self
@@ -362,7 +372,9 @@ impl<'a> RuntimeSandboxBuilder<'a> {
 
     /// Build the sandbox.
     pub fn build(self) -> Result<Sandbox<()>, AegisError> {
-        let limits = self.limits.unwrap_or_else(|| self.runtime.default_limits.clone());
+        let limits = self
+            .limits
+            .unwrap_or_else(|| self.runtime.default_limits.clone());
         let config = SandboxConfig::default().with_limits(limits);
 
         Sandbox::new(Arc::clone(&self.runtime.engine), (), config).map_err(AegisError::Execution)
@@ -370,7 +382,9 @@ impl<'a> RuntimeSandboxBuilder<'a> {
 
     /// Build the sandbox with custom state.
     pub fn build_with_state<S: Send + 'static>(self, state: S) -> Result<Sandbox<S>, AegisError> {
-        let limits = self.limits.unwrap_or_else(|| self.runtime.default_limits.clone());
+        let limits = self
+            .limits
+            .unwrap_or_else(|| self.runtime.default_limits.clone());
         let config = SandboxConfig::default().with_limits(limits);
 
         Sandbox::new(Arc::clone(&self.runtime.engine), state, config).map_err(AegisError::Execution)
@@ -470,10 +484,7 @@ mod tests {
 
     #[test]
     fn test_sandbox_builder_overrides() {
-        let runtime = Aegis::builder()
-            .with_fuel_limit(1_000_000)
-            .build()
-            .unwrap();
+        let runtime = Aegis::builder().with_fuel_limit(1_000_000).build().unwrap();
 
         let sandbox = runtime
             .sandbox()

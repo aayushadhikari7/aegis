@@ -5,8 +5,8 @@ use std::time::{Duration, Instant};
 
 use parking_lot::RwLock;
 
-use aegis_capability::CapabilityId;
 use crate::report::ExecutionOutcome;
+use aegis_capability::CapabilityId;
 
 /// Events that can be observed during sandbox execution.
 #[derive(Debug, Clone)]
@@ -152,7 +152,11 @@ impl EventSubscriber for LoggingSubscriber {
                     "Execution started"
                 );
             }
-            SandboxEvent::HostFunctionCalled { module, name, duration } => {
+            SandboxEvent::HostFunctionCalled {
+                module,
+                name,
+                duration,
+            } => {
                 tracing::trace!(
                     event = "host_function_called",
                     module = module,
@@ -161,7 +165,11 @@ impl EventSubscriber for LoggingSubscriber {
                     "Host function called"
                 );
             }
-            SandboxEvent::CapabilityChecked { id, action, permitted } => {
+            SandboxEvent::CapabilityChecked {
+                id,
+                action,
+                permitted,
+            } => {
                 if *permitted {
                     tracing::trace!(
                         event = "capability_checked",
@@ -180,7 +188,10 @@ impl EventSubscriber for LoggingSubscriber {
                     );
                 }
             }
-            SandboxEvent::MemoryGrew { from_bytes, to_bytes } => {
+            SandboxEvent::MemoryGrew {
+                from_bytes,
+                to_bytes,
+            } => {
                 tracing::debug!(
                     event = "memory_grew",
                     from = from_bytes,
@@ -196,7 +207,11 @@ impl EventSubscriber for LoggingSubscriber {
                     "Fuel consumed"
                 );
             }
-            SandboxEvent::ExecutionCompleted { function, outcome, duration } => {
+            SandboxEvent::ExecutionCompleted {
+                function,
+                outcome,
+                duration,
+            } => {
                 tracing::info!(
                     event = "execution_completed",
                     function = function,

@@ -6,8 +6,8 @@ use anyhow::{Context, Result};
 use clap::Args;
 use serde::Serialize;
 
-use aegis_wasm::prelude::*;
 use aegis_core::{ExportInfo, ExportKind, ImportInfo, ImportKind};
+use aegis_wasm::prelude::*;
 
 use crate::OutputFormat;
 
@@ -75,9 +75,10 @@ struct MemoryDisplay {
 impl From<&ExportInfo> for ExportDisplay {
     fn from(info: &ExportInfo) -> Self {
         let (kind, signature) = match &info.kind {
-            ExportKind::Function { params, results } => {
-                ("function".to_string(), Some(format!("({}) -> ({})", params, results)))
-            }
+            ExportKind::Function { params, results } => (
+                "function".to_string(),
+                Some(format!("({}) -> ({})", params, results)),
+            ),
             ExportKind::Memory => ("memory".to_string(), None),
             ExportKind::Global => ("global".to_string(), None),
             ExportKind::Table => ("table".to_string(), None),
@@ -94,9 +95,10 @@ impl From<&ExportInfo> for ExportDisplay {
 impl From<&ImportInfo> for ImportDisplay {
     fn from(info: &ImportInfo) -> Self {
         let (kind, signature) = match &info.kind {
-            ImportKind::Function { params, results } => {
-                ("function".to_string(), Some(format!("({}) -> ({})", params, results)))
-            }
+            ImportKind::Function { params, results } => (
+                "function".to_string(),
+                Some(format!("({}) -> ({})", params, results)),
+            ),
             ImportKind::Memory => ("memory".to_string(), None),
             ImportKind::Global => ("global".to_string(), None),
             ImportKind::Table => ("table".to_string(), None),
@@ -113,7 +115,9 @@ impl From<&ImportInfo> for ImportDisplay {
 
 /// Execute the inspect command.
 pub fn execute(args: InspectArgs, format: OutputFormat) -> Result<()> {
-    let runtime = Aegis::builder().build().context("Failed to create runtime")?;
+    let runtime = Aegis::builder()
+        .build()
+        .context("Failed to create runtime")?;
 
     let module = runtime
         .load_file(&args.module)
@@ -196,10 +200,7 @@ pub fn execute(args: InspectArgs, format: OutputFormat) -> Result<()> {
                         .map(|m| m.to_string())
                         .unwrap_or_else(|| "unbounded".to_string());
                     let bits = if memory.memory64 { "64-bit" } else { "32-bit" };
-                    println!(
-                        "  [{}] {} - {} pages ({})",
-                        i, memory.min_pages, max, bits
-                    );
+                    println!("  [{}] {} - {} pages ({})", i, memory.min_pages, max, bits);
                 }
             }
         }

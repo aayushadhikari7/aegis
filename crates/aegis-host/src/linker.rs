@@ -130,13 +130,13 @@ impl<T> AegisLinker<T> {
         name: &str,
         item: impl Into<wasmtime::Extern>,
     ) -> HostResult<&mut Self> {
-        self.inner
-            .define(store, module, name, item)
-            .map_err(|e| HostError::RegistrationFailed {
+        self.inner.define(store, module, name, item).map_err(|e| {
+            HostError::RegistrationFailed {
                 module: module.to_string(),
                 name: name.to_string(),
                 reason: e.to_string(),
-            })?;
+            }
+        })?;
 
         Ok(self)
     }

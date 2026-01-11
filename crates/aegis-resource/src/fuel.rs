@@ -133,7 +133,11 @@ impl FuelManager {
     /// Record fuel consumption.
     pub fn record_consumption(&self, consumed: u64) {
         self.total_consumed.fetch_add(consumed, Ordering::Relaxed);
-        debug!(consumed, total = self.total_consumed(), "Recorded fuel consumption");
+        debug!(
+            consumed,
+            total = self.total_consumed(),
+            "Recorded fuel consumption"
+        );
     }
 
     /// Record a fuel exhaustion event.

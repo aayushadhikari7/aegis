@@ -45,10 +45,7 @@ impl Default for LogLevel {
 #[derive(Debug, Clone)]
 pub enum LoggingAction {
     /// Write a log message.
-    Log {
-        level: LogLevel,
-        message_len: usize,
-    },
+    Log { level: LogLevel, message_len: usize },
 }
 
 impl Action for LoggingAction {

@@ -6,8 +6,8 @@ use std::time::Duration;
 use anyhow::{Context, Result};
 use clap::Args;
 
-use aegis_wasm::prelude::*;
 use aegis_observe::{ExecutionOutcome, ExecutionReport, ModuleInfo};
+use aegis_wasm::prelude::*;
 
 use crate::OutputFormat;
 
@@ -154,7 +154,10 @@ pub fn execute(args: RunArgs, format: OutputFormat, quiet: bool) -> Result<()> {
     }
 
     // Create sandbox and execute
-    let mut sandbox = runtime.sandbox().build().context("Failed to create sandbox")?;
+    let mut sandbox = runtime
+        .sandbox()
+        .build()
+        .context("Failed to create sandbox")?;
 
     sandbox
         .load_module(&module)
@@ -202,7 +205,11 @@ pub fn execute(args: RunArgs, format: OutputFormat, quiet: bool) -> Result<()> {
             let return_value = if results.is_empty() {
                 None
             } else {
-                let formatted = results.iter().map(format_wasm_val).collect::<Vec<_>>().join(", ");
+                let formatted = results
+                    .iter()
+                    .map(format_wasm_val)
+                    .collect::<Vec<_>>()
+                    .join(", ");
                 Some(serde_json::Value::String(formatted))
             };
             ExecutionOutcome::Success { return_value }
@@ -221,31 +228,29 @@ pub fn execute(args: RunArgs, format: OutputFormat, quiet: bool) -> Result<()> {
 
     // Output results
     match format {
-        OutputFormat::Human => {
-            match &result {
-                Ok(results) => {
-                    if !quiet {
-                        if results.is_empty() {
-                            println!("Execution completed successfully in {:?}", duration);
-                        } else {
-                            let formatted: Vec<_> = results.iter().map(format_wasm_val).collect();
-                            println!("Result: {}", formatted.join(", "));
-                            if !quiet {
-                                println!("Completed in {:?}", duration);
-                            }
+        OutputFormat::Human => match &result {
+            Ok(results) => {
+                if !quiet {
+                    if results.is_empty() {
+                        println!("Execution completed successfully in {:?}", duration);
+                    } else {
+                        let formatted: Vec<_> = results.iter().map(format_wasm_val).collect();
+                        println!("Result: {}", formatted.join(", "));
+                        if !quiet {
+                            println!("Completed in {:?}", duration);
                         }
                     }
-                    if args.metrics {
-                        println!("\nMetrics:");
-                        println!("  Duration: {:?}", metrics.duration());
-                        println!("  Fuel consumed: {}", metrics.fuel_consumed);
-                    }
                 }
-                Err(_) => {
-                    println!("{}", report.to_text());
+                if args.metrics {
+                    println!("\nMetrics:");
+                    println!("  Duration: {:?}", metrics.duration());
+                    println!("  Fuel consumed: {}", metrics.fuel_consumed);
                 }
             }
-        }
+            Err(_) => {
+                println!("{}", report.to_text());
+            }
+        },
         OutputFormat::Json | OutputFormat::JsonCompact => {
             let json = if matches!(format, OutputFormat::JsonCompact) {
                 serde_json::to_string(&report.to_json())?

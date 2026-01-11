@@ -4,16 +4,16 @@
 //! The engine periodically increments an epoch counter, and stores can
 //! be configured with a deadline that causes execution to trap when exceeded.
 
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::thread::{self, JoinHandle};
 use std::time::{Duration, Instant};
 
 use parking_lot::Mutex;
 use tracing::{info, warn};
 
-use aegis_core::engine::SharedEngine;
 use crate::error::{ResourceError, ResourceResult};
+use aegis_core::engine::SharedEngine;
 
 /// Configuration for epoch-based timeout management.
 #[derive(Debug, Clone)]
@@ -223,7 +223,10 @@ impl EpochManager {
     /// Record a timeout event.
     pub fn record_timeout(&self) {
         self.timeout_count.fetch_add(1, Ordering::Relaxed);
-        warn!(total_timeouts = self.timeout_count(), "Execution timeout occurred");
+        warn!(
+            total_timeouts = self.timeout_count(),
+            "Execution timeout occurred"
+        );
     }
 
     /// Get the total number of epochs incremented.

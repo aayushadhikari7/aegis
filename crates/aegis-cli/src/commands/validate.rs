@@ -36,7 +36,9 @@ struct ValidationResult {
 
 /// Execute the validate command.
 pub fn execute(args: ValidateArgs, format: OutputFormat) -> Result<()> {
-    let runtime = Aegis::builder().build().context("Failed to create runtime")?;
+    let runtime = Aegis::builder()
+        .build()
+        .context("Failed to create runtime")?;
 
     let mut result = ValidationResult {
         valid: true,
@@ -84,10 +86,9 @@ pub fn execute(args: ValidateArgs, format: OutputFormat) -> Result<()> {
                     }
                     other => {
                         if args.strict {
-                            result.warnings.push(format!(
-                                "Module imports from unknown module: {}",
-                                other
-                            ));
+                            result
+                                .warnings
+                                .push(format!("Module imports from unknown module: {}", other));
                         }
                     }
                 }

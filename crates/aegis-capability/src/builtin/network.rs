@@ -223,7 +223,13 @@ impl Capability for NetworkCapability {
     }
 
     fn handled_action_types(&self) -> Vec<&'static str> {
-        vec!["net:connect", "net:send", "net:receive", "net:http", "net:dns"]
+        vec![
+            "net:connect",
+            "net:send",
+            "net:receive",
+            "net:http",
+            "net:dns",
+        ]
     }
 
     fn validate(&self) -> Result<(), CapabilityError> {
@@ -319,7 +325,9 @@ pub fn check_network_permission(
 }
 
 fn extract_host_from_url(url: &str) -> Option<String> {
-    let url = url.strip_prefix("https://").or_else(|| url.strip_prefix("http://"))?;
+    let url = url
+        .strip_prefix("https://")
+        .or_else(|| url.strip_prefix("http://"))?;
     let host = url.split('/').next()?;
     let host = host.split(':').next()?;
     Some(host.to_string())

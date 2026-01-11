@@ -5,8 +5,8 @@ use std::time::Duration;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use aegis_capability::CapabilityId;
 use crate::metrics::MetricsSnapshot;
+use aegis_capability::CapabilityId;
 
 /// Unique identifier for an execution.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -174,11 +174,7 @@ pub struct ExecutionReport {
 
 impl ExecutionReport {
     /// Create a new execution report.
-    pub fn new(
-        module: ModuleInfo,
-        outcome: ExecutionOutcome,
-        metrics: MetricsSnapshot,
-    ) -> Self {
+    pub fn new(module: ModuleInfo, outcome: ExecutionOutcome, metrics: MetricsSnapshot) -> Self {
         Self {
             execution_id: ExecutionId::new(),
             module,
@@ -247,7 +243,11 @@ impl ExecutionReport {
             ExecutionOutcome::Timeout { elapsed, limit } => {
                 output.push_str(&format!("Timeout: {:?} / {:?}\n", elapsed, limit));
             }
-            ExecutionOutcome::ResourceExhausted { resource, used, limit } => {
+            ExecutionOutcome::ResourceExhausted {
+                resource,
+                used,
+                limit,
+            } => {
                 output.push_str(&format!(
                     "Resource Exhausted: {} ({} / {})\n",
                     resource, used, limit

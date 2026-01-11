@@ -61,9 +61,7 @@ pub mod sandbox;
 // Re-export main types at crate root
 pub use config::{EngineConfig, ResourceLimits, SandboxConfig};
 pub use engine::{AegisEngine, IntoShared, SharedEngine};
-pub use error::{
-    AegisError, EngineError, ExecutionError, ModuleError, Result, TrapInfo,
-};
+pub use error::{AegisError, EngineError, ExecutionError, ModuleError, Result, TrapInfo};
 pub use module::{
     ExportInfo, ExportKind, ImportInfo, ImportKind, MemoryInfo, ModuleLoader, ModuleMetadata,
     ValidatedModule,

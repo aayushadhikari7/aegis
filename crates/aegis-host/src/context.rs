@@ -157,8 +157,7 @@ impl<'a, T> HostContext<'a, T> {
         // Find null terminator or use max_len
         let len = slice.iter().position(|&b| b == 0).unwrap_or(slice.len());
 
-        String::from_utf8(slice[..len].to_vec())
-            .map_err(|e| HostError::InvalidUtf8(e.to_string()))
+        String::from_utf8(slice[..len].to_vec()).map_err(|e| HostError::InvalidUtf8(e.to_string()))
     }
 
     /// Read a string with explicit length from guest memory.

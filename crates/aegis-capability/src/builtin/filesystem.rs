@@ -127,9 +127,9 @@ impl PathPermission {
         }
 
         match action {
-            FilesystemAction::Read { .. } | FilesystemAction::List { .. } | FilesystemAction::Stat { .. } => {
-                self.read
-            }
+            FilesystemAction::Read { .. }
+            | FilesystemAction::List { .. }
+            | FilesystemAction::Stat { .. } => self.read,
             FilesystemAction::Write { .. } => self.write,
             FilesystemAction::Create { .. } => self.create,
             FilesystemAction::Delete { .. } => self.delete,
