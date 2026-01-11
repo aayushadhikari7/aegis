@@ -13,8 +13,9 @@ members = [
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
+authors = ["Aayush Adhikari <aayushadhikari7@github.com>"]
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/yourusername/aegis"
+repository = "https://github.com/aayushadhikari7/aegis"
 rust-version = "1.85"
 
 [workspace.dependencies]

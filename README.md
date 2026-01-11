@@ -33,7 +33,7 @@ Aegis enables safe execution of untrusted WebAssembly code through a capability-
 ### From Source
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/aegis.git
+git clone https://github.com/aayushadhikari7/aegis.git
 cd aegis
 cargo build --release
 ```
