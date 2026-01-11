@@ -94,7 +94,7 @@ impl Aegis {
     }
 
     /// Create a runtime with default configuration.
-    pub fn default() -> Result<AegisRuntime, AegisError> {
+    pub fn with_defaults() -> Result<AegisRuntime, AegisError> {
         AegisBuilder::new().build()
     }
 }

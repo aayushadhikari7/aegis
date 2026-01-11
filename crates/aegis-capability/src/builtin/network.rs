@@ -8,6 +8,7 @@ use crate::capability::{
 use crate::error::CapabilityError;
 
 /// Actions related to network operations.
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum NetworkAction {
     /// Connect to a host.
@@ -243,6 +244,7 @@ impl Capability for NetworkCapability {
 }
 
 /// Helper function to check network permission with a concrete action.
+#[allow(dead_code)]
 pub fn check_network_permission(
     capability: &NetworkCapability,
     action: &NetworkAction,
@@ -324,6 +326,7 @@ pub fn check_network_permission(
     }
 }
 
+#[allow(dead_code)]
 fn extract_host_from_url(url: &str) -> Option<String> {
     let url = url
         .strip_prefix("https://")

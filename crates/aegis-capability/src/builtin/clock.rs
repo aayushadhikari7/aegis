@@ -9,11 +9,12 @@ use crate::capability::{
 };
 
 /// Type of clock to provide.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub enum ClockType {
     /// Real system time.
     RealTime,
     /// Monotonic clock (for duration measurement).
+    #[default]
     Monotonic,
     /// Fixed/mocked time (for deterministic execution).
     Fixed(u64), // Unix timestamp in nanoseconds
@@ -21,13 +22,8 @@ pub enum ClockType {
     None,
 }
 
-impl Default for ClockType {
-    fn default() -> Self {
-        ClockType::Monotonic
-    }
-}
-
 /// Actions related to clock/time operations.
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ClockAction {
     /// Get the current time.
@@ -194,6 +190,7 @@ impl Capability for ClockCapability {
 }
 
 /// Helper function to check clock permission with a concrete action.
+#[allow(dead_code)]
 pub fn check_clock_permission(
     capability: &ClockCapability,
     action: &ClockAction,
@@ -239,7 +236,7 @@ mod tests {
 
     #[test]
     fn test_clock_capability_fixed() {
-        let timestamp = 1704067200_000_000_000u64;
+        let timestamp = 1_704_067_200_000_000_000_u64;
         let cap = ClockCapability::fixed(timestamp);
 
         assert_eq!(cap.get_time(), Some(timestamp));

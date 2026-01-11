@@ -373,7 +373,7 @@ impl<S: Send + 'static> Sandbox<S> {
                         trap = ?trap,
                         "Function trapped"
                     );
-                    return Err(ExecutionError::Trap(TrapInfo::from(trap.clone())));
+                    return Err(ExecutionError::Trap(TrapInfo::from(*trap)));
                 }
 
                 // Generic wasmtime error
@@ -497,7 +497,7 @@ impl<S: Send + 'static> Sandbox<S> {
                     }
 
                     warn!(sandbox_id = %self.id(), function = name, trap = ?trap, "Function trapped");
-                    return Err(ExecutionError::Trap(TrapInfo::from(trap.clone())));
+                    return Err(ExecutionError::Trap(TrapInfo::from(*trap)));
                 }
 
                 Err(ExecutionError::Wasmtime(err))

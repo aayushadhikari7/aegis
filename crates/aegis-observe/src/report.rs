@@ -227,9 +227,9 @@ impl ExecutionReport {
 
         output.push_str(&format!("Execution Report: {}\n", self.execution_id));
         output.push_str(&format!("Module: {:?}\n", self.module.name));
-        output.push_str("\n");
+        output.push('\n');
 
-        output.push_str(&format!("Outcome: "));
+        output.push_str("Outcome: ");
         match &self.outcome {
             ExecutionOutcome::Success { return_value } => {
                 output.push_str("Success\n");
@@ -264,7 +264,7 @@ impl ExecutionReport {
             }
         }
 
-        output.push_str("\n");
+        output.push('\n');
         output.push_str("Metrics:\n");
         output.push_str(&format!(
             "  Execution Time: {:?}\n",

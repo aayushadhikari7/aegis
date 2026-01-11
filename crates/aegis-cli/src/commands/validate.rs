@@ -95,10 +95,8 @@ pub fn execute(args: ValidateArgs, format: OutputFormat) -> Result<()> {
             }
 
             // Strict mode checks
-            if args.strict {
-                if module.metadata().memories.is_empty() {
-                    result.warnings.push("Module has no memory".to_string());
-                }
+            if args.strict && module.metadata().memories.is_empty() {
+                result.warnings.push("Module has no memory".to_string());
             }
         }
         Err(e) => {

@@ -5,16 +5,16 @@ use serde::{Deserialize, Serialize};
 use crate::capability::{
     Action, Capability, CapabilityId, DenialReason, PermissionResult, standard_ids,
 };
-use crate::error::CapabilityError;
 
 /// Log levels.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Default)]
 pub enum LogLevel {
     /// Trace level (most verbose).
     Trace = 0,
     /// Debug level.
     Debug = 1,
     /// Info level.
+    #[default]
     Info = 2,
     /// Warning level.
     Warn = 3,
@@ -35,13 +35,8 @@ impl LogLevel {
     }
 }
 
-impl Default for LogLevel {
-    fn default() -> Self {
-        LogLevel::Info
-    }
-}
-
 /// Actions related to logging.
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum LoggingAction {
     /// Write a log message.
@@ -152,6 +147,7 @@ impl Capability for LoggingCapability {
 }
 
 /// Helper function to check logging permission with a concrete action.
+#[allow(dead_code)]
 pub fn check_logging_permission(
     capability: &LoggingCapability,
     action: &LoggingAction,

@@ -10,6 +10,7 @@ use crate::capability::{
 use crate::error::CapabilityError;
 
 /// Actions related to filesystem operations.
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum FilesystemAction {
     /// Read from a file.
@@ -50,6 +51,7 @@ impl Action for FilesystemAction {
     }
 }
 
+#[allow(dead_code)]
 impl FilesystemAction {
     /// Get the path associated with this action.
     pub fn path(&self) -> &Path {
@@ -79,6 +81,7 @@ pub struct PathPermission {
     pub delete: bool,
 }
 
+#[allow(dead_code)]
 impl PathPermission {
     /// Create a read-only permission for a path.
     pub fn read_only(path: impl Into<PathBuf>) -> Self {
@@ -221,20 +224,9 @@ impl Capability for FilesystemCapability {
             return PermissionResult::NotApplicable;
         }
 
-        // Try to downcast to FilesystemAction
-        let fs_action = match action_type {
-            // We can't actually downcast here, so we'd need to check path somehow
-            // For now, return NotApplicable for actions we can't handle
-            _ => {
-                // Check each permission
-                for perm in &self.permissions {
-                    // Without the actual action data, we can only check based on type
-                    // In a real implementation, we'd have type information
-                }
-                PermissionResult::NotApplicable
-            }
-        };
-
+        // We can't actually downcast here without the concrete action type,
+        // so we return NotApplicable. Use check_filesystem_permission() for
+        // concrete FilesystemAction checks.
         PermissionResult::NotApplicable
     }
 
@@ -260,6 +252,7 @@ impl Capability for FilesystemCapability {
 }
 
 /// Helper function to check filesystem permission with a concrete action.
+#[allow(dead_code)]
 pub fn check_filesystem_permission(
     capability: &FilesystemCapability,
     action: &FilesystemAction,
