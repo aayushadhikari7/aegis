@@ -22,7 +22,7 @@ pub struct RunArgs {
     #[arg(short = 'e', long)]
     pub function: Option<String>,
 
-    /// Arguments to pass to the function (as JSON values)
+    /// Arguments to pass to the function
     #[arg(last = true)]
     pub args: Vec<String>,
 
@@ -57,6 +57,43 @@ pub struct RunArgs {
     /// Show execution metrics
     #[arg(long)]
     pub metrics: bool,
+}
+
+/// Parse a CLI argument into a WASM value based on expected type.
+fn parse_wasm_arg(arg: &str, expected_type: wasmtime::ValType) -> Result<wasmtime::Val> {
+    match expected_type {
+        wasmtime::ValType::I32 => {
+            let val: i32 = arg.parse().context("Expected i32 value")?;
+            Ok(wasmtime::Val::I32(val))
+        }
+        wasmtime::ValType::I64 => {
+            let val: i64 = arg.parse().context("Expected i64 value")?;
+            Ok(wasmtime::Val::I64(val))
+        }
+        wasmtime::ValType::F32 => {
+            let val: f32 = arg.parse().context("Expected f32 value")?;
+            Ok(wasmtime::Val::F32(val.to_bits()))
+        }
+        wasmtime::ValType::F64 => {
+            let val: f64 = arg.parse().context("Expected f64 value")?;
+            Ok(wasmtime::Val::F64(val.to_bits()))
+        }
+        _ => anyhow::bail!("Unsupported parameter type: {:?}", expected_type),
+    }
+}
+
+/// Format a WASM value for display.
+fn format_wasm_val(val: &wasmtime::Val) -> String {
+    match val {
+        wasmtime::Val::I32(v) => v.to_string(),
+        wasmtime::Val::I64(v) => v.to_string(),
+        wasmtime::Val::F32(v) => f32::from_bits(*v).to_string(),
+        wasmtime::Val::F64(v) => f64::from_bits(*v).to_string(),
+        wasmtime::Val::V128(v) => format!("{:?}", v),
+        wasmtime::Val::FuncRef(_) => "<funcref>".to_string(),
+        wasmtime::Val::ExternRef(_) => "<externref>".to_string(),
+        wasmtime::Val::AnyRef(_) => "<anyref>".to_string(),
+    }
 }
 
 /// Execute the run command.
@@ -123,9 +160,34 @@ pub fn execute(args: RunArgs, format: OutputFormat, quiet: bool) -> Result<()> {
         .load_module(&module)
         .context("Failed to load module into sandbox")?;
 
+    // Get function signature for argument parsing
+    let func_type = sandbox
+        .get_func_type(function)
+        .context(format!("Function '{}' not found", function))?;
+
+    let param_types: Vec<_> = func_type.params().collect();
+
+    // Validate argument count
+    if args.args.len() != param_types.len() {
+        anyhow::bail!(
+            "Function '{}' expects {} arguments, got {}",
+            function,
+            param_types.len(),
+            args.args.len()
+        );
+    }
+
+    // Parse arguments
+    let wasm_args: Vec<wasmtime::Val> = args
+        .args
+        .iter()
+        .zip(param_types.iter())
+        .map(|(arg, ty)| parse_wasm_arg(arg, ty.clone()))
+        .collect::<Result<Vec<_>>>()?;
+
     // Execute the function
     let start = std::time::Instant::now();
-    let result = sandbox.call::<(), ()>(function, ());
+    let result = sandbox.call_dynamic(function, wasm_args);
     let duration = start.elapsed();
 
     // Build the report
@@ -136,7 +198,15 @@ pub fn execute(args: RunArgs, format: OutputFormat, quiet: bool) -> Result<()> {
     };
 
     let outcome = match &result {
-        Ok(()) => ExecutionOutcome::Success { return_value: None },
+        Ok(results) => {
+            let return_value = if results.is_empty() {
+                None
+            } else {
+                let formatted = results.iter().map(format_wasm_val).collect::<Vec<_>>().join(", ");
+                Some(serde_json::Value::String(formatted))
+            };
+            ExecutionOutcome::Success { return_value }
+        }
         Err(e) => ExecutionOutcome::Error {
             message: e.to_string(),
         },
@@ -145,24 +215,35 @@ pub fn execute(args: RunArgs, format: OutputFormat, quiet: bool) -> Result<()> {
     let metrics = sandbox.metrics().clone();
     let report = ExecutionReport::new(
         module_info,
-        outcome,
-        aegis_observe::MetricsCollector::new().snapshot(), // Would use actual metrics
+        outcome.clone(),
+        aegis_observe::MetricsCollector::new().snapshot(),
     );
 
     // Output results
     match format {
         OutputFormat::Human => {
-            if result.is_ok() {
-                if !quiet {
-                    println!("Execution completed successfully in {:?}", duration);
+            match &result {
+                Ok(results) => {
+                    if !quiet {
+                        if results.is_empty() {
+                            println!("Execution completed successfully in {:?}", duration);
+                        } else {
+                            let formatted: Vec<_> = results.iter().map(format_wasm_val).collect();
+                            println!("Result: {}", formatted.join(", "));
+                            if !quiet {
+                                println!("Completed in {:?}", duration);
+                            }
+                        }
+                    }
+                    if args.metrics {
+                        println!("\nMetrics:");
+                        println!("  Duration: {:?}", metrics.duration());
+                        println!("  Fuel consumed: {}", metrics.fuel_consumed);
+                    }
                 }
-                if args.metrics {
-                    println!("\nMetrics:");
-                    println!("  Duration: {:?}", metrics.duration());
-                    println!("  Fuel consumed: {}", metrics.fuel_consumed);
+                Err(_) => {
+                    println!("{}", report.to_text());
                 }
-            } else {
-                println!("{}", report.to_text());
             }
         }
         OutputFormat::Json | OutputFormat::JsonCompact => {
@@ -175,5 +256,7 @@ pub fn execute(args: RunArgs, format: OutputFormat, quiet: bool) -> Result<()> {
         }
     }
 
-    result.map_err(|e| anyhow::anyhow!("Execution failed: {}", e))
+    result
+        .map(|_| ())
+        .map_err(|e| anyhow::anyhow!("Execution failed: {}", e))
 }

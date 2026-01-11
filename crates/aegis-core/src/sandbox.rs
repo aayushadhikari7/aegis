@@ -400,6 +400,110 @@ impl<S: Send + 'static> Sandbox<S> {
         Ok(())
     }
 
+    /// Get the type signature of an exported function.
+    ///
+    /// Returns the function type if the function exists, or None otherwise.
+    pub fn get_func_type(&mut self, name: &str) -> Option<wasmtime::FuncType> {
+        let instance = self.instance.as_ref()?;
+        let func = instance.get_func(&mut self.store, name)?;
+        Some(func.ty(&self.store))
+    }
+
+    /// Call an exported function with dynamic typing.
+    ///
+    /// This is useful for CLI tools or scenarios where function signatures
+    /// aren't known at compile time.
+    ///
+    /// # Arguments
+    ///
+    /// - `name`: Name of the exported function
+    /// - `params`: Vector of parameter values
+    ///
+    /// # Returns
+    ///
+    /// Vector of return values from the function.
+    pub fn call_dynamic(
+        &mut self,
+        name: &str,
+        params: Vec<wasmtime::Val>,
+    ) -> ExecutionResult<Vec<wasmtime::Val>> {
+        let instance = self
+            .instance
+            .as_ref()
+            .ok_or(ExecutionError::ModuleNotLoaded)?;
+
+        let func = instance
+            .get_func(&mut self.store, name)
+            .ok_or_else(|| ExecutionError::FunctionNotFound(name.to_string()))?;
+
+        // Get function type to determine result count
+        let func_type = func.ty(&self.store);
+        let result_count = func_type.results().len();
+        let mut results = vec![wasmtime::Val::I32(0); result_count];
+
+        // Record start time
+        self.store.data_mut().metrics.start_time = Some(Instant::now());
+
+        // Get initial fuel
+        let initial_fuel = if self.engine.fuel_enabled() {
+            self.store.get_fuel().unwrap_or(0)
+        } else {
+            0
+        };
+
+        debug!(sandbox_id = %self.id(), function = name, "Calling function (dynamic)");
+
+        // Execute the function
+        let call_result = func.call(&mut self.store, &params, &mut results);
+
+        // Record end time
+        self.store.data_mut().metrics.end_time = Some(Instant::now());
+
+        // Record fuel consumption
+        if self.engine.fuel_enabled() {
+            let remaining = self.store.get_fuel().unwrap_or(0);
+            self.store.data_mut().metrics.fuel_consumed = initial_fuel.saturating_sub(remaining);
+        }
+
+        match call_result {
+            Ok(()) => {
+                info!(
+                    sandbox_id = %self.id(),
+                    function = name,
+                    "Function call completed successfully"
+                );
+                Ok(results)
+            }
+            Err(err) => {
+                // Check if it's a trap first, then inspect the trap message
+                if let Some(trap) = err.downcast_ref::<wasmtime::Trap>() {
+                    let trap_msg = trap.to_string();
+
+                    if trap_msg.contains("fuel") {
+                        let limit = self.store.data().config.limits.initial_fuel;
+                        warn!(sandbox_id = %self.id(), function = name, "Out of fuel");
+                        return Err(ExecutionError::OutOfFuel {
+                            consumed: self.store.data().metrics.fuel_consumed,
+                            limit,
+                        });
+                    }
+
+                    if trap_msg.contains("epoch") {
+                        warn!(sandbox_id = %self.id(), function = name, "Execution timeout");
+                        return Err(ExecutionError::Timeout(
+                            self.store.data().config.limits.timeout,
+                        ));
+                    }
+
+                    warn!(sandbox_id = %self.id(), function = name, trap = ?trap, "Function trapped");
+                    return Err(ExecutionError::Trap(TrapInfo::from(trap.clone())));
+                }
+
+                Err(ExecutionError::Wasmtime(err))
+            }
+        }
+    }
+
     /// Reset the sandbox for reuse.
     ///
     /// This clears the current instance and resets metrics, but preserves

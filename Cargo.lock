@@ -53,6 +53,7 @@ dependencies = [
  "toml",
  "tracing",
  "tracing-subscriber",
+ "wasmtime",
 ]
 
 [[package]]
