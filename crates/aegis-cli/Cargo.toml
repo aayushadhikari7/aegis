@@ -1,6 +1,7 @@
 [package]
-name = "aegis-cli"
+name = "aegis-wasm-cli"
 description = "Command-line interface for the Aegis WebAssembly sandbox"
+readme = "README.md"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -16,7 +17,7 @@ name = "aegis"
 path = "src/main.rs"
 
 [dependencies]
-aegis = { workspace = true }
+aegis-wasm = { workspace = true }
 aegis-core = { workspace = true }
 aegis-capability = { workspace = true }
 aegis-observe = { workspace = true }

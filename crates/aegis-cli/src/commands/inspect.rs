@@ -6,7 +6,7 @@ use anyhow::{Context, Result};
 use clap::Args;
 use serde::Serialize;
 
-use aegis::prelude::*;
+use aegis_wasm::prelude::*;
 use aegis_core::{ExportInfo, ExportKind, ImportInfo, ImportKind};
 
 use crate::OutputFormat;

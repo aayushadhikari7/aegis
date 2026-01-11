@@ -6,7 +6,7 @@ use std::time::Duration;
 use anyhow::{Context, Result};
 use clap::Args;
 
-use aegis::prelude::*;
+use aegis_wasm::prelude::*;
 use aegis_observe::{ExecutionOutcome, ExecutionReport, ModuleInfo};
 
 use crate::OutputFormat;

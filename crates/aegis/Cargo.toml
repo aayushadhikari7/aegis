@@ -1,6 +1,7 @@
 [package]
-name = "aegis"
+name = "aegis-wasm"
 description = "Aegis - A local-first WebAssembly sandbox runtime"
+readme = "../../README.md"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true

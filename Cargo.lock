@@ -12,8 +12,66 @@ dependencies = [
 ]
 
 [[package]]
-name = "aegis"
-version = "0.1.0"
+name = "aegis-capability"
+version = "0.1.1"
+dependencies = [
+ "dashmap",
+ "parking_lot",
+ "serde",
+ "thiserror 2.0.17",
+ "tracing",
+]
+
+[[package]]
+name = "aegis-core"
+version = "0.1.1"
+dependencies = [
+ "parking_lot",
+ "thiserror 2.0.17",
+ "tracing",
+ "uuid",
+ "wasmtime",
+ "wat",
+]
+
+[[package]]
+name = "aegis-host"
+version = "0.1.1"
+dependencies = [
+ "aegis-capability",
+ "aegis-core",
+ "thiserror 2.0.17",
+ "tracing",
+ "wasmtime",
+]
+
+[[package]]
+name = "aegis-observe"
+version = "0.1.1"
+dependencies = [
+ "aegis-capability",
+ "parking_lot",
+ "serde",
+ "serde_json",
+ "tracing",
+ "uuid",
+]
+
+[[package]]
+name = "aegis-resource"
+version = "0.1.1"
+dependencies = [
+ "aegis-core",
+ "parking_lot",
+ "thiserror 2.0.17",
+ "tokio",
+ "tracing",
+ "wasmtime",
+]
+
+[[package]]
+name = "aegis-wasm"
+version = "0.1.1"
 dependencies = [
  "aegis-capability",
  "aegis-core",
@@ -28,24 +86,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "aegis-capability"
-version = "0.1.0"
+name = "aegis-wasm-cli"
+version = "0.1.1"
 dependencies = [
- "dashmap",
- "parking_lot",
- "serde",
- "thiserror 2.0.17",
- "tracing",
-]
-
-[[package]]
-name = "aegis-cli"
-version = "0.1.0"
-dependencies = [
- "aegis",
  "aegis-capability",
  "aegis-core",
  "aegis-observe",
+ "aegis-wasm",
  "anyhow",
  "clap",
  "serde",
@@ -53,53 +100,6 @@ dependencies = [
  "toml",
  "tracing",
  "tracing-subscriber",
- "wasmtime",
-]
-
-[[package]]
-name = "aegis-core"
-version = "0.1.0"
-dependencies = [
- "parking_lot",
- "thiserror 2.0.17",
- "tracing",
- "uuid",
- "wasmtime",
- "wat",
-]
-
-[[package]]
-name = "aegis-host"
-version = "0.1.0"
-dependencies = [
- "aegis-capability",
- "aegis-core",
- "thiserror 2.0.17",
- "tracing",
- "wasmtime",
-]
-
-[[package]]
-name = "aegis-observe"
-version = "0.1.0"
-dependencies = [
- "aegis-capability",
- "parking_lot",
- "serde",
- "serde_json",
- "tracing",
- "uuid",
-]
-
-[[package]]
-name = "aegis-resource"
-version = "0.1.0"
-dependencies = [
- "aegis-core",
- "parking_lot",
- "thiserror 2.0.17",
- "tokio",
- "tracing",
  "wasmtime",
 ]
 

@@ -1,6 +1,7 @@
 [package]
 name = "aegis-core"
 description = "Core runtime engine for the Aegis WebAssembly sandbox"
+readme = "README.md"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true

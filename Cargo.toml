@@ -11,7 +11,7 @@ members = [
 ]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 authors = ["Aayush Adhikari"]
 license = "MIT OR Apache-2.0"
@@ -24,12 +24,12 @@ rust-version = "1.85"
 
 [workspace.dependencies]
 # Internal crates
-aegis = { path = "crates/aegis" }
-aegis-core = { path = "crates/aegis-core" }
-aegis-capability = { path = "crates/aegis-capability" }
-aegis-resource = { path = "crates/aegis-resource" }
-aegis-host = { path = "crates/aegis-host" }
-aegis-observe = { path = "crates/aegis-observe" }
+aegis-wasm = { path = "crates/aegis", version = "0.1.1" }
+aegis-core = { path = "crates/aegis-core", version = "0.1.1" }
+aegis-capability = { path = "crates/aegis-capability", version = "0.1.1" }
+aegis-resource = { path = "crates/aegis-resource", version = "0.1.1" }
+aegis-host = { path = "crates/aegis-host", version = "0.1.1" }
+aegis-observe = { path = "crates/aegis-observe", version = "0.1.1" }
 
 # WebAssembly runtime
 wasmtime = "29"
